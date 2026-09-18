@@ -10,8 +10,19 @@
 
 ## Status
 
-Implementation in progress on `codex/implement-v0.1`. No release is published.
-The source intent is committed on main. Resume by inspecting this branch and test results.
+Implementation is on `codex/implement-v0.1`; no release is published.
+The source intent is committed on main. GitHub checkpoint e644307 contains the initial
+implementation and offline unit tests. Media tests and CI/package gates are now implemented.
+Resume by inspecting this branch, this checkpoint, and the latest GitHub Actions results.
+
+## Verification so far
+
+- Ruff lint and format checks pass.
+- Offline tests pass, including real FFmpeg synthetic media and the real yt-dlp processing API.
+- Python wheel and source distribution build successfully.
+- The `.deb` builds successfully with hash-locked pure-Python UI dependencies.
+- Extracted-package smoke test passes: module origins, help, version, and missing-storage guard.
+- GitHub Actions and real-device acceptance still need to be checked after publishing the PR.
 
 ## Decisions and upstream checks
 
@@ -20,7 +31,12 @@ The source intent is committed on main. Resume by inspecting this branch and tes
   extract-audio processor can otherwise leave untouched. Video output is inspected with ffprobe.
 - Deno constrains supported devices to Termux architectures providing Deno (64-bit Android).
   The `.deb` remains architecture-independent; its runtime dependencies determine availability.
-- GitHub official action majors checked on 2026-09-18: checkout 7, setup-python 7, upload-artifact 7.
+- GitHub official action majors checked on 2026-09-18: checkout 7, setup-python 7,
+  upload-artifact 7, download-artifact 8.
+- Public package metadata uses the account-derived GitHub noreply address, never personal email.
+  Contact the maintainer through GitHub issues.
+- Preliminary yt-dlp playlist filtering does not reject live entries; the per-item planning
+  boundary marks them skipped so later playlist entries survive.
 - No release tag until real-device acceptance. CI packages provide the first phone test artifact.
 
 ## Remaining real-device checks

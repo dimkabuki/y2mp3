@@ -132,7 +132,8 @@ python packaging/validate_deb.py dist/y2mp3_0.1.0_all.deb 0.1.0
 
 The build bundles only this app and locked, pure-Python UI wheels. Runtime tools
 come from Termux's package manager. Maintainer metadata is in
-`packaging/maintainer.txt` and may be overridden with `Y2MP3_MAINTAINER`.
+`packaging/maintainer.txt` (GitHub noreply address) and may be overridden with
+`Y2MP3_MAINTAINER`. Use GitHub issues for contact.
 No host binaries or host Python interpreter are included. An Ubuntu packaging
 smoke test is **not** Android runtime verification.
 

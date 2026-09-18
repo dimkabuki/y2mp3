@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: [main, 'codex/**']
+  pull_request:
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.10', '3.12', '3.14']
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install FFmpeg for local synthetic-media tests
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Install development dependencies
+        run: python -m pip install -e '.[dev]'
+      - name: Lint and formatting
+        run: |
+          ruff check .
+          ruff format --check .
+      - name: Offline tests
+        run: pytest
+      - name: Build Python distributions
+        run: python -m build
+
+  package:
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Install development dependencies
+        run: python -m pip install -e '.[dev]'
+      - name: Build and smoke-test Termux package
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(python -c 'from y2mp3 import __version__; print(__version__)')"
+          if [[ "$GITHUB_REF_TYPE" == tag && "$GITHUB_REF_NAME" != "v$version" ]]; then
+            echo 'Tag does not match the project version.' >&2
+            exit 1
+          fi
+          bash packaging/build_deb.sh --version "$version"
+          python packaging/smoke_test.py "dist/y2mp3_${version}_all.deb" "$version"
+          dpkg-deb --info "dist/y2mp3_${version}_all.deb"
+          dpkg-deb --contents "dist/y2mp3_${version}_all.deb"
+          cp "dist/y2mp3_${version}_all.deb" dist/y2mp3.deb
+          cd dist
+          sha256sum "y2mp3_${version}_all.deb" y2mp3.deb > SHA256SUMS
+          sha256sum --check SHA256SUMS
+      - uses: actions/upload-artifact@v7
+        with:
+          name: termux-deb
+          path: |
+            dist/*.deb
+            dist/SHA256SUMS
+          if-no-files-found: error
