@@ -45,6 +45,20 @@ the next step is real-device acceptance using `docs/device-test.md`.
   `.venv/bin/python packaging/smoke_test.py dist/y2mp3.deb 0.1.0` pass.
   The new single-file package is validated on Linux; Android remains untested.
 
+## Browser release workflow (2026-09-18)
+
+- Added a mobile-browser-compatible **Run workflow** choice: `Build only` (default) or
+  `Publish release`. The control becomes available after this workflow is merged to `main`.
+- Manual publishing is accepted only from the default branch and only after the reusable CI
+  workflow succeeds. It creates `v<package version>` at the exact tested commit and publishes
+  `y2mp3.deb` plus `SHA256SUMS` without requiring a local clone.
+- Release runs are serialized. Existing tags are never moved, existing releases are never
+  replaced, and tag/package version mismatches stop publication.
+- Added 12 release-safeguard tests covering manual and tag paths, wrong branches/commits,
+  corrupt checksums, existing tags/releases, and failed tag creation.
+- `ruff check .`, `ruff format --check .`, `bash -n packaging/publish_release.sh`, and
+  `pytest` pass; the full suite is now **75 passed**. Both workflow YAML files parse locally.
+
 ## Decisions and upstream checks
 
 - Verified yt-dlp 2026.08.19 public YoutubeDL options and progress/postprocessor hook contracts.

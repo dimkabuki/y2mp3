@@ -143,16 +143,33 @@ smoke test is **not** Android runtime verification.
 
 CI runs lint, offline tests, Python package builds, and a `.deb` smoke test. Every
 successful CI run includes a `termux-deb` artifact for testing before a release.
-The release workflow also supports a non-publishing manual build after it is on main.
+After the workflow is merged into `main`, releases can be published entirely in a
+browser, including on a phone. No local clone, token setup, or terminal is needed.
 
-1. Record successful checks from `docs/device-test.md` in `docs/progress.md`.
-2. Merge the reviewed implementation PR.
-3. Update the version in `pyproject.toml` and `src/y2mp3/__init__.py` together.
-4. Push a matching tag, e.g. `v0.1.0`, after device acceptance.
-5. The release workflow reruns quality checks and publishes one `y2mp3.deb`
-   and its `SHA256SUMS` file.
+1. Finish the checks in `docs/device-test.md` and record the results.
+2. Merge the reviewed PR and wait for CI on `main` to pass.
+3. Open [Actions → Release](https://github.com/dimkabuki/y2mp3/actions/workflows/release.yml).
+4. Tap **Run workflow** and select branch **main**.
+5. Choose **Publish release** under the action dropdown, then tap **Run workflow**.
+6. Wait for the run to finish, then open [Releases](https://github.com/dimkabuki/y2mp3/releases)
+   and download **y2mp3.deb** directly. The run summary also links to the package.
 
-Only the publishing job receives `contents: write`. Version/tag mismatches fail.
+If the mobile layout hides the controls, enable **Desktop site** in your browser menu.
+The default **Build only** choice runs the checks and makes a CI artifact without
+creating a tag or release. The button appears only after the workflow is on `main`.
+
+Publishing reruns all quality and package checks. The workflow reads the package
+version (currently `0.1.0`), creates its tag (`v0.1.0`) at the exact tested commit,
+and publishes one `y2mp3.deb` plus `SHA256SUMS`. Manual publishing requires the default
+branch. Existing tags must point to the tested commit; existing releases are never
+replaced. If a run fails after creating its tag but before creating a release, rerun
+that same workflow run. If a draft release already exists after an interrupted upload,
+inspect it before deciding how to recover; the workflow will not overwrite it.
+
+For later releases, update the version in both `pyproject.toml` and
+`src/y2mp3/__init__.py` through a PR first. For the first release, keep `0.1.0`.
+Pushing a matching `v*` tag remains supported for contributors who use Git.
+Only the publishing job receives `contents: write`; it uses GitHub's built-in token.
 No custom APT repository or self-update service is created.
 
 ## Limitations and troubleshooting

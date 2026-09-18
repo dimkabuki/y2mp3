@@ -4,22 +4,42 @@ on:
   push:
     tags: ['v*']
   workflow_dispatch:
+    inputs:
+      action:
+        description: 'Choose what to do (publish after device testing)'
+        type: choice
+        required: true
+        default: Build only
+        options:
+          - Build only
+          - Publish release
 
 permissions:
   contents: read
+
+concurrency:
+  group: y2mp3-release
+  cancel-in-progress: false
 
 jobs:
   verify-and-build:
     uses: ./.github/workflows/ci.yml
 
   publish:
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    if: >-
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')) ||
+      (github.event_name == 'workflow_dispatch' && inputs.action == 'Publish release')
     needs: verify-and-build
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
       - uses: actions/download-artifact@v8
         with:
           name: termux-deb
@@ -28,10 +48,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          RELEASE_ACTION: ${{ inputs.action }}
         shell: bash
-        run: |
-          set -euo pipefail
-          cd dist
-          sha256sum --check SHA256SUMS
-          gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes \
-            --title "y2mp3 $GITHUB_REF_NAME" ./y2mp3.deb SHA256SUMS
+        run: bash packaging/publish_release.sh
