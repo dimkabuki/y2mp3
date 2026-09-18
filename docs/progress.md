@@ -59,6 +59,17 @@ the next step is real-device acceptance using `docs/device-test.md`.
 - `ruff check .`, `ruff format --check .`, `bash -n packaging/publish_release.sh`, and
   `pytest` pass; the full suite is now **75 passed**. Both workflow YAML files parse locally.
 
+## Phone-friendly README (2026-09-18)
+
+- Reworked installation, first audio/video download, multiple-URL, playlist, upgrade, and
+  uninstall instructions into numbered steps suitable for a mobile browser and Termux.
+- Shell instructions use one copyable command per code block. Interactive application choices
+  remain explicit steps because the URL and available video resolutions vary per download.
+- Documented both the current pre-release file flow and the direct GitHub Release flow, including
+  storage permission, package-presence verification, output locations, and playlist folders.
+- Rechecked Ruff, all **75 tests**, Python distributions, the Debian package validator, and the
+  extracted-package smoke test. Android device acceptance remains pending.
+
 ## Decisions and upstream checks
 
 - Verified yt-dlp 2026.08.19 public YoutubeDL options and progress/postprocessor hook contracts.

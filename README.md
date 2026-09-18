@@ -14,7 +14,7 @@ installation URL below becomes available after the first stable release.
 - Sequential downloads by default, optional bounded parallel workers.
 - Per-item progress, failure isolation, and resumable partial downloads.
 
-## Install in Termux
+## Quick start in Termux
 
 Use a current official Termux installation (F-Droid or the official GitHub release
 is recommended), with the standard `/data/data/com.termux/files/usr` prefix.
@@ -22,38 +22,174 @@ A **64-bit device with the Termux Deno package available** is required by v0.1.
 Do not use the obsolete legacy Play Store build. See the [Termux installation
 instructions](https://github.com/termux/termux-app#installation).
 
-After the first stable release:
+Each block below contains one command. Copy it, paste it into Termux, press Enter,
+and wait for it to finish before continuing with the next block.
+
+### Install the test package before the first release
+
+First download `y2mp3.deb` in the Android browser and save it in **Downloads**.
+Then open Termux and update its package lists:
 
 ```sh
 pkg update
-pkg install curl
-curl -fL https://github.com/dimkabuki/y2mp3/releases/latest/download/y2mp3.deb -o y2mp3.deb
-apt install ./y2mp3.deb
-termux-setup-storage
-y2mp3
 ```
 
-Approve Android storage access when prompted. Use `apt install ./y2mp3.deb`, which
-resolves dependencies, rather than installing with `dpkg -i` alone. The package
-requires `python-yt-dlp`, `yt-dlp-ejs`, Deno, and FFmpeg. Installation never runs pip.
-
-For the pre-release device test, save the supplied `y2mp3.deb` directly into Android
-Downloads, then:
+Create the Termux link to Android shared storage:
 
 ```sh
 termux-setup-storage
+```
+
+Approve the Android storage permission when prompted. Then open Downloads:
+
+```sh
 cd ~/storage/downloads
+```
+
+Confirm that the downloaded package is present:
+
+```sh
+ls -lh y2mp3.deb
+```
+
+Install it together with its Termux dependencies:
+
+```sh
 apt install ./y2mp3.deb
+```
+
+Check the installed version:
+
+```sh
 y2mp3 --version
+```
+
+Start the application:
+
+```sh
 y2mp3
 ```
 
+If `ls` cannot find the package, check the browser's download location. On some
+Android versions it may have been renamed, for example to `y2mp3 (1).deb`.
+
+### Install after the first GitHub Release
+
+Once a release exists, the package can be downloaded directly from GitHub. Run
+these commands one at a time:
+
+```sh
+pkg update
+```
+
+```sh
+pkg install curl
+```
+
+```sh
+termux-setup-storage
+```
+
+Approve storage access if Android asks, then download the current release:
+
+```sh
+curl -fL https://github.com/dimkabuki/y2mp3/releases/latest/download/y2mp3.deb -o "$HOME/storage/downloads/y2mp3.deb"
+```
+
+```sh
+apt install "$HOME/storage/downloads/y2mp3.deb"
+```
+
+```sh
+y2mp3 --version
+```
+
+```sh
+y2mp3
+```
+
+Use `apt install`, rather than `dpkg -i`, so dependencies are resolved. The package
+requires `python-yt-dlp`, `yt-dlp-ejs`, Deno, and FFmpeg. Installation never runs pip.
 GitHub Releases serve the `.deb` directly, without an archive. Before a release exists,
 a maintainer can supply the validated `.deb` directly. Developer CI artifacts remain
 ZIP archives on GitHub and require a signed-in account to download. Each new build
 contains only one package, `y2mp3.deb`; its version is stored in the package metadata.
 
-## Use
+## Step-by-step usage
+
+### Download one video as MP3 audio
+
+Start the application:
+
+```sh
+y2mp3
+```
+
+Then answer the prompts:
+
+1. At **What would you like to download?**, press Enter. Audio is the default.
+2. At the URL prompt, paste the public video URL and press Enter.
+3. Press Enter again on the empty URL line to finish entering URLs.
+4. At **Processing mode**, press Enter. Sequential processing is the default.
+5. Wait for the completed path and final summary.
+
+The MP3 appears in:
+
+```text
+~/storage/downloads/y2mp3/audio
+```
+
+### Download one video as MP4
+
+Start `y2mp3` again:
+
+```sh
+y2mp3
+```
+
+Then:
+
+1. Enter `2` to select Video.
+2. Paste the public video URL, press Enter, then press Enter on the empty URL line.
+3. Choose a displayed resolution, or press Enter for the suggested default.
+4. Press Enter at **Processing mode** for sequential processing.
+5. Wait for the completed path and summary.
+
+The MP4 appears in:
+
+```text
+~/storage/downloads/y2mp3/video
+```
+
+### Download several URLs
+
+At the URL prompt, either paste several URLs separated by spaces or commas, or paste
+one URL per line. After the last URL, submit an empty line. Input order and duplicate
+URLs are preserved.
+
+To use parallel downloads, enter `2` at **Processing mode**, then enter the number
+of workers. Pressing Enter accepts the suggested value, normally two workers.
+
+### Download a playlist
+
+Paste the public playlist URL exactly like an individual URL. The application expands
+the full playlist. Audio mode uses 192 kbps MP3 for every available item. Video mode
+asks for a resolution separately for every item before downloading begins.
+
+Every playlist gets its own folder, for example:
+
+```text
+~/storage/downloads/y2mp3/audio/My playlist [playlist ID]/
+```
+
+Items keep their playlist order:
+
+```text
+001 - First item [video ID].mp3
+002 - Second item [video ID].mp3
+```
+
+### Prompt reference
 
 ```text
 y2mp3 — Download audio or video
@@ -98,9 +234,43 @@ Exit status: 0 = all succeeded; 1 = failed/skipped item; 2 = startup/input error
 
 ## Upgrade and uninstall
 
-Repeat the download and `apt install ./y2mp3.deb` commands to upgrade. Update upstream
-extractors with `pkg upgrade`; yt-dlp updates often fix site changes. Uninstall with
-`pkg uninstall y2mp3`. Downloaded media and partial files are not removed.
+To upgrade after releases are available, update Termux first:
+
+```sh
+pkg update
+```
+
+```sh
+pkg upgrade
+```
+
+Download the latest y2mp3 package again:
+
+```sh
+curl -fL https://github.com/dimkabuki/y2mp3/releases/latest/download/y2mp3.deb -o "$HOME/storage/downloads/y2mp3.deb"
+```
+
+Install the downloaded update:
+
+```sh
+apt install "$HOME/storage/downloads/y2mp3.deb"
+```
+
+Confirm the installed version:
+
+```sh
+y2mp3 --version
+```
+
+Updating Termux also updates yt-dlp, which often fixes changes made by supported sites.
+
+To uninstall the application:
+
+```sh
+pkg uninstall y2mp3
+```
+
+Uninstalling does not remove downloaded media or retained partial files.
 
 ## Develop on macOS or Linux
 
