@@ -416,7 +416,7 @@ Package metadata requirements:
 - a concise English description;
 - a valid maintainer value obtained from repository configuration or an explicit build variable, not an invented email address.
 
-The package may be assembled with `dpkg-deb` on an Ubuntu GitHub runner because it contains only architecture-independent Python/text assets. Do not use PyInstaller or include host-built executables.
+The package may be assembled with `dpkg-deb` on an Ubuntu GitHub runner because it contains only architecture-independent Python/text assets. Build both Debian archive members as `control.tar.xz` and `data.tar.xz`, matching official Termux packages; reject gzip members during validation. Do not use PyInstaller or include host-built executables.
 
 The maintainer scripts must be noninteractive. `postinst` may print a reminder to run `termux-setup-storage`, but it must not invoke it or mutate Android permissions.
 
@@ -567,7 +567,7 @@ The v0.1 implementation is complete when all of the following are true:
 19. Playlist results use a playlist-title directory and indexed filenames.
 20. The final summary and process exit code accurately represent partial failures.
 21. Normal CI passes without network media downloads.
-22. A `v0.1.0` tag or browser-triggered `Publish release` run produces a GitHub Release containing one `y2mp3.deb` and checksums; the manual path creates the tag automatically after verification.
+22. A matching version tag or browser-triggered `Publish release` run produces a GitHub Release containing one `y2mp3.deb` and checksums; the manual path creates the tag automatically after verification.
 23. No custom APT repository is created or required.
 
 ## Explicit non-goals for v0.1

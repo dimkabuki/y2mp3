@@ -1,4 +1,4 @@
-# Real Termux acceptance (before v0.1.0)
+# Real Termux acceptance (before v0.1.1)
 
 Record device model, Android version, Termux source/version, package commit SHA,
 and `python --version`, `ffmpeg -version`, `deno --version`, `yt-dlp --version`.

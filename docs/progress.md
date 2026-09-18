@@ -70,6 +70,20 @@ the next step is real-device acceptance using `docs/device-test.md`.
 - Rechecked Ruff, all **75 tests**, Python distributions, the Debian package validator, and the
   extracted-package smoke test. Android device acceptance remains pending.
 
+## Termux package compression fix (2026-09-18)
+
+- First real-device installation exposed an APT error: `could not locate member
+  control.tar{.xz,.lzma,}`. The published v0.1.0 package must not be installed.
+- Root cause: the project builder forced gzip, while official Termux Debian packages use
+  `control.tar.xz` and `data.tar.xz`.
+- Changed the builder to uniform xz compression and made validation require the exact Debian
+  members `debian-binary`, `control.tar.xz`, and `data.tar.xz`.
+- Added a regression test proving that a gzip-member package is rejected before publication.
+- Bumped the corrected package version to 0.1.1. After CI and real-device installation, publish
+  v0.1.1 so it replaces v0.1.0 as the latest release.
+- Automated verification passes with 76 tests, and the rebuilt package contains exactly
+  `debian-binary`, `control.tar.xz`, and `data.tar.xz` before passing the install smoke test.
+
 ## Decisions and upstream checks
 
 - Verified yt-dlp 2026.08.19 public YoutubeDL options and progress/postprocessor hook contracts.
