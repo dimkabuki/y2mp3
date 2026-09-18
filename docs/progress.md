@@ -11,18 +11,27 @@
 ## Status
 
 Implementation is on `codex/implement-v0.1`; no release is published.
-The source intent is committed on main. GitHub checkpoint e644307 contains the initial
-implementation and offline unit tests. Media tests and CI/package gates are now implemented.
-Resume by inspecting this branch, this checkpoint, and the latest GitHub Actions results.
+The source intent is committed on main. Implementation commit `c2ef95b` is available in
+[PR #1](https://github.com/dimkabuki/y2mp3/pull/1). Automated verification is complete;
+the next step is real-device acceptance using `docs/device-test.md`.
 
 ## Verification so far
 
-- Ruff lint and format checks pass.
-- Offline tests pass, including real FFmpeg synthetic media and the real yt-dlp processing API.
-- Python wheel and source distribution build successfully.
-- The `.deb` builds successfully with hash-locked pure-Python UI dependencies.
-- Extracted-package smoke test passes: module origins, help, version, and missing-storage guard.
-- GitHub Actions and real-device acceptance still need to be checked after publishing the PR.
+- `ruff check .` and `ruff format --check .` pass.
+- `pytest`: **63 passed** locally, including real FFmpeg synthetic media and the real
+  yt-dlp processing API. No live YouTube downloads were used for these tests.
+- `python -m build`: Python wheel and source distribution build successfully.
+- `bash packaging/build_deb.sh --version 0.1.0`: the `.deb` builds and validates successfully
+  with hash-locked pure-Python UI dependencies.
+- `python packaging/smoke_test.py dist/y2mp3_0.1.0_all.deb 0.1.0`: passes module-origin,
+  help, version, and missing-storage checks on Linux.
+- [GitHub Actions run 35373913754](https://github.com/dimkabuki/y2mp3/actions/runs/35373913754)
+  passed all quality jobs (Python 3.10, 3.12, 3.14) and the package job on 2026-09-18.
+  The package job also verified SHA256 checksums and uploaded the `termux-deb` artifact.
+- [Download the tested artifact](https://github.com/dimkabuki/y2mp3/actions/runs/35373913754/artifacts/10559292796)
+  while signed into GitHub. It contains the versioned `.deb`, `y2mp3.deb`, and `SHA256SUMS`.
+  Extract it into Android Downloads and follow the pre-release installation steps in README.
+- PR remains unmerged. Android runtime acceptance and stable release remain pending.
 
 ## Decisions and upstream checks
 
