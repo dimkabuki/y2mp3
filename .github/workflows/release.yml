@@ -34,4 +34,4 @@ jobs:
           cd dist
           sha256sum --check SHA256SUMS
           gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes \
-            --title "y2mp3 $GITHUB_REF_NAME" ./*.deb SHA256SUMS
+            --title "y2mp3 $GITHUB_REF_NAME" ./y2mp3.deb SHA256SUMS

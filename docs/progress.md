@@ -30,8 +30,20 @@ the next step is real-device acceptance using `docs/device-test.md`.
   The package job also verified SHA256 checksums and uploaded the `termux-deb` artifact.
 - [Download the tested artifact](https://github.com/dimkabuki/y2mp3/actions/runs/35373913754/artifacts/10559292796)
   while signed into GitHub. It contains the versioned `.deb`, `y2mp3.deb`, and `SHA256SUMS`.
-  Extract it into Android Downloads and follow the pre-release installation steps in README.
+  This is a historical artifact; new builds use one filename as described below.
 - PR remains unmerged. Android runtime acceptance and stable release remain pending.
+
+## Packaging simplification (2026-09-18)
+
+- At the maintainer's request, build and publish only `y2mp3.deb`, with `SHA256SUMS`
+  as a separate integrity file. The version remains in Debian metadata and release tags.
+- Updated the builder, CI, release workflow, intent, and device instructions together.
+- Direct `.deb` delivery is the user-facing path. GitHub Actions ZIPs remain developer
+  artifacts; no release is published before device acceptance.
+- Rechecked Ruff (lint and formatting), all 63 offline tests, and Python distributions.
+- `PYTHON=.venv/bin/python bash packaging/build_deb.sh` and
+  `.venv/bin/python packaging/smoke_test.py dist/y2mp3.deb 0.1.0` pass.
+  The new single-file package is validated on Linux; Android remains untested.
 
 ## Decisions and upstream checks
 

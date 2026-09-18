@@ -384,10 +384,10 @@ Tests must not require downloading real media by default. Any network integratio
 
 ## Termux `.deb` layout
 
-Build an architecture-independent Debian package named like:
+Build one architecture-independent Debian package named:
 
 ```text
-y2mp3_0.1.0_all.deb
+y2mp3.deb
 ```
 
 Its essential installed layout should be equivalent to:
@@ -457,15 +457,14 @@ It must:
 3. Build the architecture-independent `.deb`.
 4. Validate it with `dpkg-deb --info` and `dpkg-deb --contents` plus project-specific checks.
 5. Generate SHA-256 checksums.
-6. Upload the versioned `.deb` and checksums as workflow artifacts.
+6. Upload `y2mp3.deb` and checksums as workflow artifacts.
 7. On a tag build only, create a GitHub Release and upload:
-   - `y2mp3_<version>_all.deb`;
-   - a byte-identical stable-name asset `y2mp3.deb`;
+   - one package asset named `y2mp3.deb`;
    - `SHA256SUMS`.
 
 Use the current stable major versions of official GitHub Actions. Prefer the preinstalled GitHub CLI with `GITHUB_TOKEN` for release creation over unnecessary third-party release actions. Grant `contents: write` only to the release job that needs it.
 
-The stable asset name is required so the README can provide a latest-release installation command without knowing the version.
+The stable asset name is required so the README can provide a latest-release installation command without knowing the version. Per the maintainer decision on 2026-09-18, do not create a duplicate versioned filename. Keep the version in package metadata and the release tag. Users should download the `.deb` directly; CI ZIP archives are developer artifacts.
 
 ## Installation documentation
 
@@ -566,7 +565,7 @@ The v0.1 implementation is complete when all of the following are true:
 19. Playlist results use a playlist-title directory and indexed filenames.
 20. The final summary and process exit code accurately represent partial failures.
 21. Normal CI passes without network media downloads.
-22. A `v0.1.0` tag produces a GitHub Release containing the versioned `.deb`, `y2mp3.deb`, and checksums.
+22. A `v0.1.0` tag produces a GitHub Release containing one `y2mp3.deb` and checksums.
 23. No custom APT repository is created or required.
 
 ## Explicit non-goals for v0.1

@@ -4,7 +4,7 @@ Record device model, Android version, Termux source/version, package commit SHA,
 and `python --version`, `ffmpeg -version`, `deno --version`, `yt-dlp --version`.
 Use short media you own or are authorized to download.
 
-1. On a current 64-bit Termux, run `pkg update`, then `apt install ./y2mp3_0.1.0_all.deb`.
+1. On a current 64-bit Termux, run `pkg update`, then `apt install ./y2mp3.deb`.
    All declared dependencies must install without pip or manual downloads.
 2. `y2mp3 --help` and `y2mp3 --version` work without starting prompts.
 3. Before storage setup, `y2mp3` should explain `termux-setup-storage` and exit 2.

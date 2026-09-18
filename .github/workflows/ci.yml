@@ -65,17 +65,16 @@ jobs:
             exit 1
           fi
           bash packaging/build_deb.sh --version "$version"
-          python packaging/smoke_test.py "dist/y2mp3_${version}_all.deb" "$version"
-          dpkg-deb --info "dist/y2mp3_${version}_all.deb"
-          dpkg-deb --contents "dist/y2mp3_${version}_all.deb"
-          cp "dist/y2mp3_${version}_all.deb" dist/y2mp3.deb
+          python packaging/smoke_test.py dist/y2mp3.deb "$version"
+          dpkg-deb --info dist/y2mp3.deb
+          dpkg-deb --contents dist/y2mp3.deb
           cd dist
-          sha256sum "y2mp3_${version}_all.deb" y2mp3.deb > SHA256SUMS
+          sha256sum y2mp3.deb > SHA256SUMS
           sha256sum --check SHA256SUMS
       - uses: actions/upload-artifact@v7
         with:
           name: termux-deb
           path: |
-            dist/*.deb
+            dist/y2mp3.deb
             dist/SHA256SUMS
           if-no-files-found: error

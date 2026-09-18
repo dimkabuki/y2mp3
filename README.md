@@ -37,19 +37,21 @@ Approve Android storage access when prompted. Use `apt install ./y2mp3.deb`, whi
 resolves dependencies, rather than installing with `dpkg -i` alone. The package
 requires `python-yt-dlp`, `yt-dlp-ejs`, Deno, and FFmpeg. Installation never runs pip.
 
-For the pre-release device test, download the `termux-deb` artifact from a successful
-[CI run](https://github.com/dimkabuki/y2mp3/actions), unzip it into Downloads, then:
+For the pre-release device test, save the supplied `y2mp3.deb` directly into Android
+Downloads, then:
 
 ```sh
 termux-setup-storage
 cd ~/storage/downloads
-apt install ./y2mp3_0.1.0_all.deb
+apt install ./y2mp3.deb
 y2mp3 --version
 y2mp3
 ```
 
-GitHub artifact downloads require a signed-in GitHub account. Extract the ZIP using
-Android's file manager, or `pkg install unzip` followed by `unzip termux-deb.zip`.
+GitHub Releases serve the `.deb` directly, without an archive. Before a release exists,
+a maintainer can supply the validated `.deb` directly. Developer CI artifacts remain
+ZIP archives on GitHub and require a signed-in account to download. Each new build
+contains only one package, `y2mp3.deb`; its version is stored in the package metadata.
 
 ## Use
 
@@ -127,7 +129,7 @@ On Linux with `dpkg-deb` and Python development dependencies installed:
 
 ```sh
 bash packaging/build_deb.sh
-python packaging/validate_deb.py dist/y2mp3_0.1.0_all.deb 0.1.0
+python packaging/validate_deb.py dist/y2mp3.deb 0.1.0
 ```
 
 The build bundles only this app and locked, pure-Python UI wheels. Runtime tools
@@ -147,8 +149,8 @@ The release workflow also supports a non-publishing manual build after it is on 
 2. Merge the reviewed implementation PR.
 3. Update the version in `pyproject.toml` and `src/y2mp3/__init__.py` together.
 4. Push a matching tag, e.g. `v0.1.0`, after device acceptance.
-5. The release workflow reruns quality checks and publishes the versioned `.deb`,
-   byte-identical `y2mp3.deb`, and `SHA256SUMS`.
+5. The release workflow reruns quality checks and publishes one `y2mp3.deb`
+   and its `SHA256SUMS` file.
 
 Only the publishing job receives `contents: write`. Version/tag mismatches fail.
 No custom APT repository or self-update service is created.

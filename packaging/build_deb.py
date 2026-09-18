@@ -121,7 +121,7 @@ def main() -> None:
             path.chmod(
                 0o755 if path.is_dir() or path in {launcher, control / "postinst"} else 0o644
             )
-        output = args.output_dir / f"y2mp3_{version}_all.deb"
+        output = args.output_dir / "y2mp3.deb"
         run("dpkg-deb", "--root-owner-group", "-Zgzip", "--build", str(stage), str(output))
         validate(output, version)
         print(output)
