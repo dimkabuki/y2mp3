@@ -448,19 +448,21 @@ Do not require Android, Termux, media network access, or secrets.
 
 ### Release workflow
 
-Run when a tag matching `v*` is pushed. Also support `workflow_dispatch` for a non-publishing test build.
+Run when a tag matching `v*` is pushed. Support `workflow_dispatch` with a browser dropdown: `Build only` (default) or `Publish release`. Manual publishing is allowed from the default branch after device acceptance and requires no local clone or manually pushed tag.
 
 It must:
 
 1. Run or depend on the same quality checks as CI.
-2. Derive the package version from the tag.
+2. Use the project version for manual runs; on tag runs, require the tag to match it.
 3. Build the architecture-independent `.deb`.
 4. Validate it with `dpkg-deb --info` and `dpkg-deb --contents` plus project-specific checks.
 5. Generate SHA-256 checksums.
 6. Upload `y2mp3.deb` and checksums as workflow artifacts.
-7. On a tag build only, create a GitHub Release and upload:
+7. After checks pass, on a tag build or an explicit manual `Publish release` run, create a GitHub Release and upload:
    - one package asset named `y2mp3.deb`;
    - `SHA256SUMS`.
+
+For manual publishing, create the version tag at the exact tested commit. Never move an existing tag or overwrite an existing release. Serialize release runs to prevent accidental concurrent publication.
 
 Use the current stable major versions of official GitHub Actions. Prefer the preinstalled GitHub CLI with `GITHUB_TOKEN` for release creation over unnecessary third-party release actions. Grant `contents: write` only to the release job that needs it.
 
@@ -565,7 +567,7 @@ The v0.1 implementation is complete when all of the following are true:
 19. Playlist results use a playlist-title directory and indexed filenames.
 20. The final summary and process exit code accurately represent partial failures.
 21. Normal CI passes without network media downloads.
-22. A `v0.1.0` tag produces a GitHub Release containing one `y2mp3.deb` and checksums.
+22. A `v0.1.0` tag or browser-triggered `Publish release` run produces a GitHub Release containing one `y2mp3.deb` and checksums; the manual path creates the tag automatically after verification.
 23. No custom APT repository is created or required.
 
 ## Explicit non-goals for v0.1
