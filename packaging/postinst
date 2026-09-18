@@ -1,0 +1,5 @@
+#!/data/data/com.termux/files/usr/bin/sh
+set -eu
+if [ "${1:-}" = configure ]; then
+    printf '%s\n' 'y2mp3: Run termux-setup-storage once and approve Android storage access.'
+fi

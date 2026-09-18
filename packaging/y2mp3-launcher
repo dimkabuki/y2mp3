@@ -1,0 +1,4 @@
+#!/data/data/com.termux/files/usr/bin/sh
+PYTHONPATH=/data/data/com.termux/files/usr/lib/y2mp3/app:/data/data/com.termux/files/usr/lib/y2mp3/vendor
+export PYTHONPATH
+exec /data/data/com.termux/files/usr/bin/python -m y2mp3 "$@"
