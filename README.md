@@ -4,9 +4,9 @@ Interactive audio and video downloads for **Termux on Android**. Powered by the
 public yt-dlp Python API and FFmpeg. YouTube is the primary target; other public
 sites supported by yt-dlp work on a best-effort basis.
 
-**Status:** v0.1 implementation, pending real-device acceptance. No stable release yet.
-Use the Debian package artifact from CI for device testing. The latest-release
-installation URL below becomes available after the first stable release.
+**Status:** v0.1.1 compatibility fix, pending real-device acceptance. Do not install
+the v0.1.0 package: its Debian archive compression is incompatible with Termux APT.
+Use a v0.1.1 CI package for testing until the corrected release is published.
 
 - MP3 audio at 192 kbps (default mode).
 - H.264/AAC MP4 video; choose a resolution separately for each video.
@@ -16,10 +16,12 @@ installation URL below becomes available after the first stable release.
 
 ## Quick start in Termux
 
-Use a current official Termux installation (F-Droid or the official GitHub release
-is recommended), with the standard `/data/data/com.termux/files/usr` prefix.
-A **64-bit device with the Termux Deno package available** is required by v0.1.
-Do not use the obsolete legacy Play Store build. See the [Termux installation
+Use a current official Termux installation with the standard
+`/data/data/com.termux/files/usr` prefix. F-Droid or the official GitHub release is
+recommended. The current Google Play build is also supported on a best-effort basis;
+it uses a separate package repository whose versions can lag behind the other sources.
+A **64-bit device with the Termux Deno package available** is required by v0.1. Do not
+use the obsolete legacy Play Store build. See the [Termux installation
 instructions](https://github.com/termux/termux-app#installation).
 
 Each block below contains one command. Copy it, paste it into Termux, press Enter,
@@ -110,6 +112,9 @@ y2mp3
 
 Use `apt install`, rather than `dpkg -i`, so dependencies are resolved. The package
 requires `python-yt-dlp`, `yt-dlp-ejs`, Deno, and FFmpeg. Installation never runs pip.
+The `.deb` deliberately does not pin these dependencies to a particular Termux release;
+your configured Termux repository selects compatible versions and `pkg upgrade` keeps
+them current.
 GitHub Releases serve the `.deb` directly, without an archive. Before a release exists,
 a maintainer can supply the validated `.deb` directly. Developer CI artifacts remain
 ZIP archives on GitHub and require a signed-in account to download. Each new build
@@ -299,7 +304,7 @@ On Linux with `dpkg-deb` and Python development dependencies installed:
 
 ```sh
 bash packaging/build_deb.sh
-python packaging/validate_deb.py dist/y2mp3.deb 0.1.0
+python packaging/validate_deb.py dist/y2mp3.deb 0.1.1
 ```
 
 The build bundles only this app and locked, pure-Python UI wheels. Runtime tools
@@ -329,7 +334,7 @@ The default **Build only** choice runs the checks and makes a CI artifact withou
 creating a tag or release. The button appears only after the workflow is on `main`.
 
 Publishing reruns all quality and package checks. The workflow reads the package
-version (currently `0.1.0`), creates its tag (`v0.1.0`) at the exact tested commit,
+version (currently `0.1.1`), creates its tag (`v0.1.1`) at the exact tested commit,
 and publishes one `y2mp3.deb` plus `SHA256SUMS`. Manual publishing requires the default
 branch. Existing tags must point to the tested commit; existing releases are never
 replaced. If a run fails after creating its tag but before creating a release, rerun
@@ -337,7 +342,7 @@ that same workflow run. If a draft release already exists after an interrupted u
 inspect it before deciding how to recover; the workflow will not overwrite it.
 
 For later releases, update the version in both `pyproject.toml` and
-`src/y2mp3/__init__.py` through a PR first. For the first release, keep `0.1.0`.
+`src/y2mp3/__init__.py` through a PR first. The corrected package uses `0.1.1`.
 Pushing a matching `v*` tag remains supported for contributors who use Git.
 Only the publishing job receives `contents: write`; it uses GitHub's built-in token.
 No custom APT repository or self-update service is created.
@@ -351,6 +356,8 @@ No custom APT repository or self-update service is created.
 - Missing storage: run `termux-setup-storage` and approve permission. Check Android
   app permissions if the Downloads directory remains inaccessible.
 - Missing dependencies: `pkg update && pkg install python-yt-dlp yt-dlp-ejs deno ffmpeg`.
+- `could not locate member control.tar...`: the obsolete v0.1.0 package used an
+  incompatible archive compression. Install v0.1.1 or newer.
 - A Deno dependency unavailable on your device means that architecture is outside v0.1.
 - Video conversion on phones can be slow, use substantial storage, and drain battery.
   Compatible H.264/AAC streams are preferred and copied without re-encoding. Other

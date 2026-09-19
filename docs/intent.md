@@ -57,7 +57,9 @@ All source code, UI strings, logs, documentation, workflows, and package metadat
 
 ## Supported runtime
 
-Target current supported Termux installations on Android, installed from an official Termux source rather than the obsolete Google Play build.
+Target current supported Termux installations on Android. F-Droid and GitHub builds are
+preferred; the current Google Play build is supported on a best-effort basis. The obsolete
+legacy Play Store build is unsupported.
 
 Use only Termux-compatible paths. Do not assume standard desktop Linux paths such as `/usr/bin`.
 
@@ -85,6 +87,10 @@ ffmpeg
 Add `python` explicitly only if required by the final package metadata; `python-yt-dlp` already depends on it in current Termux repositories.
 
 Do not run `pip install` during package installation. Installation must be deterministic and owned by the package manager.
+
+Do not pin the Debian dependencies to a yt-dlp calendar release. Official Termux channels
+may publish at different times, and each channel's package manager must select its available
+versions.
 
 Bundle the application and its pure-Python terminal UI dependencies in the `y2mp3` package. Do not bundle FFmpeg, Python, Deno, `yt-dlp`, platform-specific wheels, native `.so` files, or binaries built for desktop Linux.
 
@@ -416,7 +422,7 @@ Package metadata requirements:
 - a concise English description;
 - a valid maintainer value obtained from repository configuration or an explicit build variable, not an invented email address.
 
-The package may be assembled with `dpkg-deb` on an Ubuntu GitHub runner because it contains only architecture-independent Python/text assets. Do not use PyInstaller or include host-built executables.
+The package may be assembled with `dpkg-deb` on an Ubuntu GitHub runner because it contains only architecture-independent Python/text assets. Build both Debian archive members as `control.tar.xz` and `data.tar.xz`, matching official Termux packages; reject gzip members during validation. Do not use PyInstaller or include host-built executables.
 
 The maintainer scripts must be noninteractive. `postinst` may print a reminder to run `termux-setup-storage`, but it must not invoke it or mutate Android permissions.
 
@@ -567,7 +573,7 @@ The v0.1 implementation is complete when all of the following are true:
 19. Playlist results use a playlist-title directory and indexed filenames.
 20. The final summary and process exit code accurately represent partial failures.
 21. Normal CI passes without network media downloads.
-22. A `v0.1.0` tag or browser-triggered `Publish release` run produces a GitHub Release containing one `y2mp3.deb` and checksums; the manual path creates the tag automatically after verification.
+22. A matching version tag or browser-triggered `Publish release` run produces a GitHub Release containing one `y2mp3.deb` and checksums; the manual path creates the tag automatically after verification.
 23. No custom APT repository is created or required.
 
 ## Explicit non-goals for v0.1

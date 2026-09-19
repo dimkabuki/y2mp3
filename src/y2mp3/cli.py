@@ -121,7 +121,7 @@ def summary(console: Console, jobs: list[Job]) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Interactive public audio/video downloads for Termux."
+        prog="y2mp3", description="Interactive public audio/video downloads for Termux."
     )
     parser.add_argument("--version", action="version", version=f"y2mp3 {__version__}")
     parser.add_argument(

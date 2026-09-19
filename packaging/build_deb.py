@@ -122,8 +122,19 @@ def main() -> None:
                 0o755 if path.is_dir() or path in {launcher, control / "postinst"} else 0o644
             )
         output = args.output_dir / "y2mp3.deb"
-        run("dpkg-deb", "--root-owner-group", "-Zgzip", "--build", str(stage), str(output))
-        validate(output, version)
+        built_output = work / "y2mp3.deb"
+        # Termux's APT reader expects the Debian control and data members in xz format.
+        run(
+            "dpkg-deb",
+            "--root-owner-group",
+            "--uniform-compression",
+            "-Zxz",
+            "--build",
+            str(stage),
+            str(built_output),
+        )
+        validate(built_output, version)
+        shutil.copyfile(built_output, output)
         print(output)
 
 

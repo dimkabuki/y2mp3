@@ -11,6 +11,12 @@ MAGIC = (b"\x7fELF", b"MZ", b"\xcf\xfa\xed\xfe", b"\xfe\xed\xfa\xcf", b"\xca\xfe
 
 
 def validate(package: Path, version: str) -> None:
+    members = subprocess.check_output(["ar", "t", str(package)], text=True).splitlines()
+    expected_members = ["debian-binary", "control.tar.xz", "data.tar.xz"]
+    if members != expected_members:
+        raise ValueError(
+            f"Invalid Debian archive members; Termux requires {expected_members}, found {members}."
+        )
     info = subprocess.check_output(["dpkg-deb", "--field", str(package)], text=True)
     fields = dict(
         line.split(": ", 1)
@@ -25,9 +31,9 @@ def validate(package: Path, version: str) -> None:
     }.items():
         if fields.get(key) != expected:
             raise ValueError(f"Invalid {key}: {fields.get(key)}")
-    deps = {part.strip().split()[0] for part in fields.get("Depends", "").split(",")}
+    deps = {part.strip() for part in fields.get("Depends", "").split(",")}
     if deps != {"python-yt-dlp", "yt-dlp-ejs", "deno", "ffmpeg"}:
-        raise ValueError("Incorrect runtime dependencies.")
+        raise ValueError("Incorrect or version-pinned runtime dependencies.")
     with tempfile.TemporaryDirectory() as temp:
         archive = Path(temp) / "payload.tar"
         with archive.open("wb") as out:
@@ -71,7 +77,10 @@ def validate(package: Path, version: str) -> None:
                 b"#!/data/data/com.termux/files/usr/bin/sh\n"
             ):
                 raise ValueError("Invalid Termux launcher.")
-    print(f"Validated {package.name}: version {version}, Termux prefix, pure-Python payload")
+    print(
+        f"Validated {package.name}: version {version}, xz members, "
+        "Termux prefix, pure-Python payload"
+    )
 
 
 if __name__ == "__main__":
