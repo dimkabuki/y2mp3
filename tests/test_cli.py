@@ -16,7 +16,10 @@ def test_help_and_version_do_not_need_storage(monkeypatch, capsys):
         with pytest.raises(SystemExit) as result:
             cli.main([flag])
         assert result.value.code == 0
-    assert "0.1.1" in capsys.readouterr().out
+    output = capsys.readouterr().out
+    assert "usage: y2mp3 " in output
+    assert "__main__.py" not in output
+    assert "0.1.1" in output
 
 
 def test_missing_storage_exit_code(monkeypatch, tmp_path):

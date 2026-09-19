@@ -88,6 +88,8 @@ the next step is real-device acceptance using `docs/device-test.md`.
   `python-yt-dlp` 2026.06.09 while all four required packages are available.
 - Removed the calendar-version constraint so the configured Termux repository owns dependency
   selection. Package validation and a regression test now reject version-pinned dependencies.
+- Real-device launcher checks exposed `usage: __main__.py` in help output. Set argparse's public
+  program name explicitly to `y2mp3` and added a regression assertion.
 
 ## Decisions and upstream checks
 
