@@ -11,6 +11,13 @@ ROOT = Path(__file__).resolve().parents[1]
 VALIDATOR = ROOT / "packaging/validate_deb.py"
 
 
+def test_control_uses_termux_repository_dependency_versions():
+    control = (ROOT / "packaging/control.in").read_text()
+
+    assert "Depends: python-yt-dlp, yt-dlp-ejs, deno, ffmpeg\n" in control
+    assert "python-yt-dlp (" not in control
+
+
 @pytest.mark.skipif(
     shutil.which("dpkg-deb") is None or shutil.which("ar") is None,
     reason="requires dpkg-deb and ar",

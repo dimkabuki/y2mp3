@@ -81,12 +81,18 @@ the next step is real-device acceptance using `docs/device-test.md`.
 - Added a regression test proving that a gzip-member package is rejected before publication.
 - Bumped the corrected package version to 0.1.1. After CI and real-device installation, publish
   v0.1.1 so it replaces v0.1.0 as the latest release.
-- Automated verification passes with 76 tests, and the rebuilt package contains exactly
+- Automated verification passes with 77 tests, and the rebuilt package contains exactly
   `debian-binary`, `control.tar.xz`, and `data.tar.xz` before passing the install smoke test.
+- A current Google Play Termux build (`googleplay.2026.02.11`, aarch64, Android 16) exposed
+  an unnecessary `python-yt-dlp (>= 2026.08.19)` constraint: its current repository provides
+  `python-yt-dlp` 2026.06.09 while all four required packages are available.
+- Removed the calendar-version constraint so the configured Termux repository owns dependency
+  selection. Package validation and a regression test now reject version-pinned dependencies.
 
 ## Decisions and upstream checks
 
-- Verified yt-dlp 2026.08.19 public YoutubeDL options and progress/postprocessor hook contracts.
+- Verified the public YoutubeDL options and progress/postprocessor hook contracts against both
+  yt-dlp 2026.06.09 (Google Play repository level) and 2026.08.19 (build environment level).
 - Explicit FFmpeg processing enforces MP3 bitrate even for source MP3 files, which upstream's
   extract-audio processor can otherwise leave untouched. Video output is inspected with ffprobe.
 - Deno constrains supported devices to Termux architectures providing Deno (64-bit Android).

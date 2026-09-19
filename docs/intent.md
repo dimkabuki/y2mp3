@@ -57,7 +57,9 @@ All source code, UI strings, logs, documentation, workflows, and package metadat
 
 ## Supported runtime
 
-Target current supported Termux installations on Android, installed from an official Termux source rather than the obsolete Google Play build.
+Target current supported Termux installations on Android. F-Droid and GitHub builds are
+preferred; the current Google Play build is supported on a best-effort basis. The obsolete
+legacy Play Store build is unsupported.
 
 Use only Termux-compatible paths. Do not assume standard desktop Linux paths such as `/usr/bin`.
 
@@ -85,6 +87,10 @@ ffmpeg
 Add `python` explicitly only if required by the final package metadata; `python-yt-dlp` already depends on it in current Termux repositories.
 
 Do not run `pip install` during package installation. Installation must be deterministic and owned by the package manager.
+
+Do not pin the Debian dependencies to a yt-dlp calendar release. Official Termux channels
+may publish at different times, and each channel's package manager must select its available
+versions.
 
 Bundle the application and its pure-Python terminal UI dependencies in the `y2mp3` package. Do not bundle FFmpeg, Python, Deno, `yt-dlp`, platform-specific wheels, native `.so` files, or binaries built for desktop Linux.
 

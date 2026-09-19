@@ -16,10 +16,12 @@ Use a v0.1.1 CI package for testing until the corrected release is published.
 
 ## Quick start in Termux
 
-Use a current official Termux installation (F-Droid or the official GitHub release
-is recommended), with the standard `/data/data/com.termux/files/usr` prefix.
-A **64-bit device with the Termux Deno package available** is required by v0.1.
-Do not use the obsolete legacy Play Store build. See the [Termux installation
+Use a current official Termux installation with the standard
+`/data/data/com.termux/files/usr` prefix. F-Droid or the official GitHub release is
+recommended. The current Google Play build is also supported on a best-effort basis;
+it uses a separate package repository whose versions can lag behind the other sources.
+A **64-bit device with the Termux Deno package available** is required by v0.1. Do not
+use the obsolete legacy Play Store build. See the [Termux installation
 instructions](https://github.com/termux/termux-app#installation).
 
 Each block below contains one command. Copy it, paste it into Termux, press Enter,
@@ -110,6 +112,9 @@ y2mp3
 
 Use `apt install`, rather than `dpkg -i`, so dependencies are resolved. The package
 requires `python-yt-dlp`, `yt-dlp-ejs`, Deno, and FFmpeg. Installation never runs pip.
+The `.deb` deliberately does not pin these dependencies to a particular Termux release;
+your configured Termux repository selects compatible versions and `pkg upgrade` keeps
+them current.
 GitHub Releases serve the `.deb` directly, without an archive. Before a release exists,
 a maintainer can supply the validated `.deb` directly. Developer CI artifacts remain
 ZIP archives on GitHub and require a signed-in account to download. Each new build

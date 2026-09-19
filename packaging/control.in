@@ -2,7 +2,7 @@ Package: y2mp3
 Version: {version}
 Architecture: all
 Maintainer: {maintainer}
-Depends: python-yt-dlp (>= 2026.08.19), yt-dlp-ejs, deno, ffmpeg
+Depends: python-yt-dlp, yt-dlp-ejs, deno, ffmpeg
 Homepage: https://github.com/dimkabuki/y2mp3
 Section: utils
 Priority: optional

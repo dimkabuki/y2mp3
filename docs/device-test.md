@@ -6,6 +6,8 @@ Use short media you own or are authorized to download.
 
 1. On a current 64-bit Termux, run `pkg update`, then `apt install ./y2mp3.deb`.
    All declared dependencies must install without pip or manual downloads.
+   On the current Google Play build, repository-provided dependency versions may lag behind
+   F-Droid/GitHub; the y2mp3 package must not require one specific yt-dlp calendar release.
 2. `y2mp3 --help` and `y2mp3 --version` work without starting prompts.
 3. Before storage setup, `y2mp3` should explain `termux-setup-storage` and exit 2.
    If storage is already configured, skip this check; do not revoke existing access just to test it.

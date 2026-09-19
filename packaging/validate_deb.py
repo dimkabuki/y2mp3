@@ -31,9 +31,9 @@ def validate(package: Path, version: str) -> None:
     }.items():
         if fields.get(key) != expected:
             raise ValueError(f"Invalid {key}: {fields.get(key)}")
-    deps = {part.strip().split()[0] for part in fields.get("Depends", "").split(",")}
+    deps = {part.strip() for part in fields.get("Depends", "").split(",")}
     if deps != {"python-yt-dlp", "yt-dlp-ejs", "deno", "ffmpeg"}:
-        raise ValueError("Incorrect runtime dependencies.")
+        raise ValueError("Incorrect or version-pinned runtime dependencies.")
     with tempfile.TemporaryDirectory() as temp:
         archive = Path(temp) / "payload.tar"
         with archive.open("wb") as out:
